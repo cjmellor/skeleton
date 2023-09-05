@@ -1,5 +1,7 @@
 # 💀 Package Skeleton CLI
 
+![Social Cover](https://github.com/cjmellor/skeleton/assets/1848476/733b39c1-c202-44be-96fa-fc1f3b70481b)
+
 The Package Skeleton CLI is a tool to generate a package skeleton to start building a Laravel package.
 
 ## Installation
