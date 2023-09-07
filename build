@@ -374,16 +374,16 @@ $composerDataStructure['require-dev'] = array_merge(
     ]
 );
 
+// At this point, $packageName needs to be ucfirst
+$packageName = ucfirst(camelCase(string: $packageName));
+
 rename(from: 'stubs/Arch.php.stub', to: 'tests/Arch.php');
 rename(from: 'stubs/TestCase.php.stub', to: 'tests/TestCase.php');
 replaceInFile(
     search: [':vendorName', ':packageName'],
-    replace: [$vendorName, ucfirst($packageName)],
+    replace: [$vendorName, $packageName],
     filename: 'tests/TestCase.php',
 );
-
-// At this point, $packageName needs to be ucfirst
-$packageName = ucfirst(camelCase(string: $packageName));
 
 // Does the User want to use Pest?
 if ($testingFramework === 'Pest') {
