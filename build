@@ -393,7 +393,7 @@ if (in_array(needle: 'Pint', haystack: $enabledFeatures)) {
     $composerDataStructure['require-dev'] = array_merge(
         $composerDataStructure['require-dev'],
         [
-            "nunomaduro/pint" => "^1.0",
+            "laravel/pint" => "^1.0",
         ]
     );
 }
