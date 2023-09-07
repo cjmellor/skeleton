@@ -81,7 +81,7 @@ function addComposerData(array $data, string $filePath = 'composer.json'): bool
  |
 */
 
-/*
+/**
  * Prompt the user to enter the name of the package maintainer
  * Suggests: it gets the name from git config
  */
@@ -91,7 +91,7 @@ $packageAuthorName = suggest(
     required: true,
 );
 
-/*
+/**
  * Prompt the user to enter the email of the package maintainer
  * Suggests: it gets the email from git config
  * Validation: it must be a valid email address
@@ -106,7 +106,7 @@ $email = suggest(
     },
 );
 
-/*
+/**
  * Prompt the user to enter the name of the package author
  */
 $username = text(
@@ -116,7 +116,7 @@ $username = text(
 );
 $username = slugify($username);
 
-/*
+/**
  * Prompt the user to enter the vendor namespace of the package
  * Suggests: the vendor name
  * Validation: it must be alphanumeric
@@ -135,7 +135,7 @@ $vendorName = suggest(
 $vendorName = ucwords($vendorName);
 $vendorNameSlug = slugify($vendorName);
 
-/*
+/**
  * Prompt the user to enter the name of the package
  * Validation: it must be alphanumeric
  */
@@ -150,7 +150,7 @@ $packageName = suggest(
 );
 $packageName = slugify($packageName);
 
-/*
+/**
  * Prompt the user to enter the package description
  */
 $packageDescription = text(
@@ -158,7 +158,7 @@ $packageDescription = text(
     required: true,
 );
 
-/*
+/**
  * Prompt the user for the packages' Class name
  * Suggests: the package name
  * Validation: it must be alphanumeric
@@ -174,7 +174,7 @@ $className = suggest(
 );
 $className = ucwords($className);
 
-/*
+/**
  * Prompt for the minimum PHP version the package supports
  */
 $phpVersion = select(
@@ -186,7 +186,7 @@ $phpVersion = select(
     default: '8.2',
 );
 
-/*
+/**
  * prompt for the Laravel version the package supports
  */
 $laravelVersion = select(
@@ -197,7 +197,19 @@ $laravelVersion = select(
     default: '10',
 );
 
-/*
+/**
+ * Prompt for which testing framework to use
+ */
+$testingFramework = select(
+    label: 'Select a Testing Framework',
+    options: [
+        'Pest',
+        'PHPUnit',
+    ],
+    default: 'Pest',
+);
+
+/**
  * Prompt the user to enable some extra dependencies and actions
  * - Dependabot
  * - Update CHANGELOG
@@ -220,7 +232,7 @@ $enabledFeatures = multiselect(
     ],
 );
 
-/*
+/**
  * If PHPStan is selected as an extra feature, see if Larastan should be enabled too
  */
 if (isset($enabledFeatures[3])) {
@@ -321,7 +333,7 @@ replaceInFile(
     filename: '.github/ISSUE_TEMPLATE/config.yml',
 );
 
-/*
+/**
  * Add some meta data and main requirements.
  */
 $composerDataStructure = [
@@ -349,7 +361,7 @@ $composerDataStructure = [
     ],
 ];
 
-/*
+/**
  * Add the development requirements.
  */
 
@@ -371,7 +383,7 @@ replaceInFile(
 );
 
 // Does the User want to use Pest?
-if (in_array(needle: 'Pest', haystack: $enabledFeatures)) {
+if ($testingFramework === 'Pest') {
     $composerDataStructure['require-dev'] = array_merge(
         $composerDataStructure['require-dev'],
         [
@@ -446,7 +458,7 @@ if (in_array(needle: 'Rector', haystack: $enabledFeatures)) {
 // At this point, $packageName needs to be ucfirst
 $packageName = ucfirst(camelCase(string: $packageName));
 
-/*
+/**
  * Add autoload/autoload-dev data
  */
 $composerDataStructure['autoload'] = [
@@ -462,7 +474,7 @@ $composerDataStructure['autoload-dev'] = [
     ],
 ];
 
-/*
+/**
  * Add scripts
  */
 $composerDataStructure['scripts'] = [
@@ -474,7 +486,7 @@ $composerDataStructure['scripts'] = [
     'pest' => 'vendor/bin/pest',
 ];
 
-/*
+/**
  * Add config data
  */
 $composerDataStructure['config'] = [
@@ -484,7 +496,7 @@ $composerDataStructure['config'] = [
     'sort-packages' => true,
 ];
 
-/*
+/**
  * Add extra data
  */
 $composerDataStructure['extra'] = [
@@ -502,7 +514,7 @@ $composerDataStructure['extra'] = [
 
 addComposerData(data: $composerDataStructure);
 
-/*
+/**
  |--------------------------------------------------------------------------
  | Install the dependencies
  |--------------------------------------------------------------------------
