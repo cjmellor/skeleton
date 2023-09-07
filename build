@@ -284,20 +284,6 @@ file_put_contents(
     data: "<?php\n\nreturn [\n\n];\n"
 );
 
-// Add the Facade
-touch(filename: "src/Facades/$className.php");
-file_put_contents(
-    filename: "src/Facades/$className.php",
-    data: "<?php\n\nnamespace $vendorName\\$packageName\\Facades;\n\nuse Illuminate\Support\Facades\Facade;\n\nclass $className extends Facade\n{\n    protected static function getFacadeAccessor(): string\n    {\n        return '$packageName';\n    }\n}\n"
-);
-
-// Add the Service Provider
-touch(filename: "src/{$className}ServiceProvider.php");
-file_put_contents(
-    filename: "src/{$className}ServiceProvider.php",
-    data: "<?php\n\nnamespace $vendorName\\$packageName;\nuse Spatie\LaravelPackageTools\Package;\n\nuse Spatie\LaravelPackageTools\PackageServiceProvider;\n\nclass {$className}ServiceProvider extends PackageServiceProvider\n{\n    public function configurePackage(Package \$package): void\n    {\n        // \$package->name('my-package');\n    }\n}\n"
-);
-
 // Add the LICENCE file
 replaceInFile(
     search: [':year', ':fullName'],
@@ -376,6 +362,20 @@ $composerDataStructure['require-dev'] = array_merge(
 
 // At this point, $packageName needs to be ucfirst
 $packageName = ucfirst(camelCase(string: $packageName));
+
+// Add the Facade
+touch(filename: "src/Facades/$className.php");
+file_put_contents(
+    filename: "src/Facades/$className.php",
+    data: "<?php\n\nnamespace $vendorName\\$packageName\\Facades;\n\nuse Illuminate\Support\Facades\Facade;\n\nclass $className extends Facade\n{\n    protected static function getFacadeAccessor(): string\n    {\n        return '$packageName';\n    }\n}\n"
+);
+
+// Add the Service Provider
+touch(filename: "src/{$className}ServiceProvider.php");
+file_put_contents(
+    filename: "src/{$className}ServiceProvider.php",
+    data: "<?php\n\nnamespace $vendorName\\$packageName;\nuse Spatie\LaravelPackageTools\Package;\n\nuse Spatie\LaravelPackageTools\PackageServiceProvider;\n\nclass {$className}ServiceProvider extends PackageServiceProvider\n{\n    public function configurePackage(Package \$package): void\n    {\n        // \$package->name('my-package');\n    }\n}\n"
+);
 
 rename(from: 'stubs/Arch.php.stub', to: 'tests/Arch.php');
 rename(from: 'stubs/TestCase.php.stub', to: 'tests/TestCase.php');
