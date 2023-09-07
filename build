@@ -382,6 +382,9 @@ replaceInFile(
     filename: 'tests/TestCase.php',
 );
 
+// At this point, $packageName needs to be ucfirst
+$packageName = ucfirst(camelCase(string: $packageName));
+
 // Does the User want to use Pest?
 if ($testingFramework === 'Pest') {
     $composerDataStructure['require-dev'] = array_merge(
@@ -396,7 +399,7 @@ if ($testingFramework === 'Pest') {
     touch(filename: 'tests/Pest.php');
     file_put_contents(
         filename: 'tests/Pest.php',
-        data: "<?php\n\nuse $vendorName\\$packageName\\Tests\TestCase;\n\nduses(TestCase::class)->in(__DIR__);\n"
+        data: "<?php\n\nuse $vendorName\\$packageName\\Tests\TestCase;\n\nuses(TestCase::class)->in(__DIR__);\n"
     );
 }
 
@@ -454,9 +457,6 @@ if (in_array(needle: 'Rector', haystack: $enabledFeatures)) {
         filename: 'rector.php',
     );
 }
-
-// At this point, $packageName needs to be ucfirst
-$packageName = ucfirst(camelCase(string: $packageName));
 
 /**
  * Add autoload/autoload-dev data
