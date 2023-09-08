@@ -36,6 +36,11 @@ function camelCase(string $string): string
     }, subject: $string);
 }
 
+function kebabCase(string $string): string
+{
+    return strtolower(preg_replace(pattern: '/([a-zA-Z])(?=[A-Z])/', replacement: '$1-', subject: $string));
+}
+
 function replaceInFile($search, $replace, $filename): void
 {
     file_put_contents(
@@ -379,11 +384,22 @@ file_put_contents(
 
 rename(from: 'stubs/Arch.php.stub', to: 'tests/Arch.php');
 rename(from: 'stubs/TestCase.php.stub', to: 'tests/TestCase.php');
+
 replaceInFile(
     search: [':vendorName', ':packageName'],
     replace: [$vendorName, $packageName],
     filename: 'tests/TestCase.php',
 );
+
+if ($testingFramework === 'PHPUnit') {
+    rename(from: 'stubs/run-tests.yml.stub', to: '.github/workflows/run-tests.yml');
+
+    replaceInFile(
+        search: [':phpVersion', ':laravelVersion'],
+        replace: [$phpVersion, $laravelVersion],
+        filename: '.github/workflows/run-tests.yml',
+    );
+}
 
 // Does the User want to use Pest?
 if ($testingFramework === 'Pest') {
@@ -401,6 +417,13 @@ if ($testingFramework === 'Pest') {
         filename: 'tests/Pest.php',
         data: "<?php\n\nuse $vendorName\\$packageName\\Tests\TestCase;\n\nuses(TestCase::class)->in(__DIR__);\n"
     );
+
+    rename(from: 'stubs/run-pest.yml.stub', to: '.github/workflows/run-pest.yml');
+    replaceInFile(
+        search: [':phpVersion', ':laravelVersion'],
+        replace: [$phpVersion, $laravelVersion],
+        filename: '.github/workflows/run-pest.yml',
+    );
 }
 
 // Does the User want to use Pint?
@@ -411,6 +434,8 @@ if (in_array(needle: 'Pint', haystack: $enabledFeatures)) {
             "laravel/pint" => "^1.0",
         ]
     );
+
+    rename(from: 'stubs/run-linter.yml.stub', to: '.github/workflows/run-linter.yml');
 }
 
 // Does the User want to use PHPStan and Larastan?
@@ -432,10 +457,17 @@ if (in_array(needle: 'PHPStan', haystack: $enabledFeatures)) {
     }
 
     rename(from: 'stubs/phpstan.neon.stub', to: 'phpstan.neon');
+    rename(from: 'stubs/static-analysis.yml.stub', to: '.github/workflows/static-analysis.yml');
 
     file_put_contents(
         filename: 'phpstan.neon',
         data: "includes: - ./vendor/nunomaduro/larastan/extension.neon\n\n".file_get_contents(filename: 'phpstan.neon')
+    );
+
+    replaceInFile(
+        search: [':phpVersion'],
+        replace: [$phpVersion],
+        filename: '.github/workflows/static-analysis.yml',
     );
 }
 
@@ -515,13 +547,13 @@ $composerDataStructure['extra'] = [
 addComposerData(data: $composerDataStructure);
 
 /**
- |--------------------------------------------------------------------------
- | Install the dependencies
- |--------------------------------------------------------------------------
- |
- | Everything is done; now it's time to install the dependencies.
- |
-*/
+ * |--------------------------------------------------------------------------
+ * | Install the dependencies
+ * |--------------------------------------------------------------------------
+ * |
+ * | Everything is done; now it's time to install the dependencies.
+ * |
+ */
 $confirmInstall = confirm(label: 'Are you ready to install the dependencies?');
 
 if ($confirmInstall) {
@@ -529,8 +561,13 @@ if ($confirmInstall) {
 
     run(command: 'composer update --quiet --no-interaction');
 
-    // The README is cleared so the User can use it to write their own documentation
-    file_put_contents(filename: 'README.md', data: '');
+    rename(from: 'stubs/README.md.stub', to: 'README.md');
+
+    replaceInFile(
+        search: [':username', ':packageName', ':laravelVersion', ':which-test'],
+        replace: [$username, kebabCase($packageName), $laravelVersion, $testingFramework === 'Pest' ? 'pest' : 'tests'],
+        filename: 'README.md',
+    );
 }
 
 info(message: 'Installation complete! You\'re all set to start building your package.');
