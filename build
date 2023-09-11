@@ -7,13 +7,13 @@ use function Laravel\Prompts\{multiselect, select, suggest, text};
 require_once __DIR__.'/vendor/autoload.php';
 
 /*
- |--------------------------------------------------------------------------
- | Helper functions
- |--------------------------------------------------------------------------
- |
- | Functions used to help keep things DRY.
- |
-*/
+|--------------------------------------------------------------------------
+| Helper functions
+|--------------------------------------------------------------------------
+|
+| Functions used to help keep things DRY.
+|
+ */
 function run($command): string
 {
     return trim(string: (string) shell_exec(command: $command));
@@ -78,13 +78,13 @@ function addComposerData(array $data, string $filePath = 'composer.json'): bool
 }
 
 /*
- |--------------------------------------------------------------------------
- | Prompt the user for package details
- | --------------------------------------------------------------------------
- |
- | Prompts the user for the package details needed before scaffolding begins.
- |
-*/
+|--------------------------------------------------------------------------
+| Prompt the user for package details
+| --------------------------------------------------------------------------
+|
+| Prompts the user for the package details needed before scaffolding begins.
+|
+ */
 
 /**
  * Prompt the user to enter the name of the package maintainer
@@ -245,13 +245,13 @@ if (isset($enabledFeatures[3])) {
 }
 
 /*
- |--------------------------------------------------------------------------
- | Scaffold the package
- |--------------------------------------------------------------------------
- |
- | Scaffold the package using the details provided by the user.
- |
-*/
+|--------------------------------------------------------------------------
+| Scaffold the package
+|--------------------------------------------------------------------------
+|
+| Scaffold the package using the details provided by the user.
+|
+ */
 
 // Add the source folders
 $directories = [
@@ -534,10 +534,10 @@ $composerDataStructure['config'] = [
 $composerDataStructure['extra'] = [
     'laravel' => [
         'providers' => [
-            "$vendorName\\$packageName\\{$className}ServiceProvider::class",
+            "$vendorName\\$packageName\\{$className}ServiceProvider",
         ],
         'aliases' => [
-            "$className" => "$vendorName\\$packageName\\Facades\\$className::class",
+            "$className" => "$vendorName\\$packageName\\Facades\\$className",
         ],
     ],
     'minimum-stability' => 'stable',
@@ -546,13 +546,13 @@ $composerDataStructure['extra'] = [
 
 addComposerData(data: $composerDataStructure);
 
-/**
- * |--------------------------------------------------------------------------
- * | Install the dependencies
- * |--------------------------------------------------------------------------
- * |
- * | Everything is done; now it's time to install the dependencies.
- * |
+/*
+|--------------------------------------------------------------------------
+| Install the dependencies
+|--------------------------------------------------------------------------
+|
+| Everything is done; now it's time to install the dependencies.
+|
  */
 $confirmInstall = confirm(label: 'Are you ready to install the dependencies?');
 
