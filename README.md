@@ -6,14 +6,14 @@ The Package Skeleton CLI is a tool to generate a package skeleton to start build
 
 ## Installation
 
-Create a folder for your package and install the package skeleton CLI:
+Clone this repository into a new folder and launch the install:
 
 ```bash
-mkdir my-package
+git clone https://github.com/cjmellor/skeleton my-package
 
 cd my-package
 
-composer require cjmellor/skeleton
+composer install
 ```
 
 ## Usage
