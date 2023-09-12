@@ -6,7 +6,11 @@ The Package Skeleton CLI is a tool to generate a package skeleton to start build
 
 ## Installation
 
-Clone this repository into a new folder and launch the install:
+It is recommended to click the **Use this template** button and choose to create a new repository
+
+<img width="187" alt="image" src="https://github.com/cjmellor/skeleton/assets/1848476/7aed2752-c27a-4e9b-9e8b-8e86b4c800af">
+
+Otherwise, you can clone this repository into a new folder and launch the install:
 
 ```bash
 git clone https://github.com/cjmellor/skeleton my-package
@@ -15,6 +19,16 @@ cd my-package
 
 composer install
 ```
+
+If you cloned the repo, you will need to remove the `origin` remote and add a new one
+
+```bash
+git remote remove origin
+
+git remote add origin git@github.com:<username>/<package-name>.git
+```
+
+Replace `<username` and `<package-name>` where applicable.
 
 ## Usage
 
