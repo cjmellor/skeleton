@@ -253,6 +253,20 @@ if (isset($enabledFeatures[3])) {
 |
  */
 
+/**
+ * Check the git remote origin, and make sure it matches the package name.
+ */
+$gitRemoteOrigin = run(command: 'git config --get remote.origin.url');
+
+if (str_contains(haystack: $gitRemoteOrigin, needle: 'skeleton.git')) {
+    $parts = explode(separator: '/', string: $gitRemoteOrigin);
+    $parts[count($parts) - 1] = $packageName.'.git';
+
+    $gitRemoteOrigin = implode(separator: '/', array: $parts);
+
+    run(command: "git remote set-url origin $gitRemoteOrigin");
+}
+
 // Add the source folders
 $directories = [
     'config',
@@ -372,7 +386,7 @@ $packageName = ucfirst(camelCase(string: $packageName));
 touch(filename: "src/Facades/$className.php");
 file_put_contents(
     filename: "src/Facades/$className.php",
-    data: "<?php\n\nnamespace $vendorName\\$packageName\\Facades;\n\nuse Illuminate\Support\Facades\Facade;\n\nclass $className extends Facade\n{\n    protected static function getFacadeAccessor(): string\n    {\n        return '$packageName';\n    }\n}\n"
+    data: "<?php\n\nnamespace $vendorName\\$packageName\\Facades;\n\nuse Illuminate\Support\Facades\Facade;\n\nclass $className extends Facade\n{\n    protected static function getFacadeAccessor(): string\n    {\n        return '\'' . kebabCase($packageName) . '\'';\n    }\n}\n"
 );
 
 // Add the Service Provider
@@ -580,3 +594,10 @@ if ($deleteInstaller) {
     warning(message: 'The installer has been deleted');
 }
 
+$deleteStubs = confirm(label: 'Do you want to delete the stubs?');
+
+if ($deleteStubs) {
+    run(command: 'rm -rf stubs');
+
+    warning(message: 'The stubs folder has been deleted');
+}
