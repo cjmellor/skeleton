@@ -386,7 +386,7 @@ $packageName = ucfirst(camelCase(string: $packageName));
 touch(filename: "src/Facades/$className.php");
 file_put_contents(
     filename: "src/Facades/$className.php",
-    data: "<?php\n\nnamespace $vendorName\\$packageName\\Facades;\n\nuse Illuminate\Support\Facades\Facade;\n\nclass $className extends Facade\n{\n    protected static function getFacadeAccessor(): string\n    {\n        return '$packageName';\n    }\n}\n"
+    data: "<?php\n\nnamespace $vendorName\\$packageName\\Facades;\n\nuse Illuminate\Support\Facades\Facade;\n\nclass $className extends Facade\n{\n    protected static function getFacadeAccessor(): string\n    {\n        return '\'' . kebabCase($packageName) . '\'';\n    }\n}\n"
 );
 
 // Add the Service Provider
