@@ -1,8 +1,8 @@
 #!/usr/bin/env php
 <?php
 
-use function Laravel\Prompts\{confirm, info, note, warning};
-use function Laravel\Prompts\{multiselect, select, suggest, text};
+use function Laravel\Prompts\{confirm, info, warning};
+use function Laravel\Prompts\{multiselect, select, spin, suggest, text};
 
 require_once __DIR__.'/vendor/autoload.php';
 
@@ -289,9 +289,13 @@ $directories = [
 foreach ($directories as $key => $value) {
     if (is_array($value)) {
         foreach ($value as $subDir) {
-            mkdir(directory: $key.'/'.$subDir, recursive: true);
+            $dirPath = $key.'/'.$subDir;
+
+            if (! file_exists($dirPath)) {
+                mkdir(directory: $dirPath, recursive: true);
+            }
         }
-    } else {
+    } elseif (! file_exists($value)) {
         mkdir(directory: $value, recursive: true);
     }
 }
@@ -384,16 +388,48 @@ $packageName = ucfirst(camelCase(string: $packageName));
 
 // Add the Facade
 touch(filename: "src/Facades/$className.php");
+$facadeCode = <<<EOT
+<?php
+
+namespace $vendorName\\$packageName\\Facades;
+
+use Illuminate\Support\Facades\Facade;
+
+class $className extends Facade
+{
+    protected static function getFacadeAccessor(): string
+    {
+        return kebabCase($packageName);
+    }
+}
+EOT;
+
 file_put_contents(
     filename: "src/Facades/$className.php",
-    data: "<?php\n\nnamespace $vendorName\\$packageName\\Facades;\n\nuse Illuminate\Support\Facades\Facade;\n\nclass $className extends Facade\n{\n    protected static function getFacadeAccessor(): string\n    {\n        return '\'' . kebabCase($packageName) . '\'';\n    }\n}\n"
+    data: $facadeCode,
 );
 
 // Add the Service Provider
 touch(filename: "src/{$className}ServiceProvider.php");
+$serviceProviderCode = <<<EOT
+<?php
+
+namespace $vendorName\\$packageName;
+
+use Illuminate\Support\ServiceProvider;
+
+class {$className}ServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        // ...
+    }
+}
+EOT;
+
 file_put_contents(
     filename: "src/{$className}ServiceProvider.php",
-    data: "<?php\n\nnamespace $vendorName\\$packageName;\nuse Spatie\LaravelPackageTools\Package;\n\nuse Spatie\LaravelPackageTools\PackageServiceProvider;\n\nclass {$className}ServiceProvider extends PackageServiceProvider\n{\n    public function configurePackage(Package \$package): void\n    {\n        // \$package->name('my-package');\n    }\n}\n"
+    data: $serviceProviderCode,
 );
 
 rename(from: 'stubs/Arch.php.stub', to: 'tests/Arch.php');
@@ -571,20 +607,18 @@ addComposerData(data: $composerDataStructure);
 $confirmInstall = confirm(label: 'Are you ready to install the dependencies?');
 
 if ($confirmInstall) {
-    note(message: 'Installing dependencies...');
+    spin(callback: function () use ($username, $packageName, $laravelVersion, $testingFramework) {
+        run(command: 'composer update --quiet --no-interaction');
 
-    run(command: 'composer update --quiet --no-interaction');
+        rename(from: 'stubs/README.md.stub', to: 'README.md');
 
-    rename(from: 'stubs/README.md.stub', to: 'README.md');
-
-    replaceInFile(
-        search: [':username', ':packageName', ':laravelVersion', ':which-test'],
-        replace: [$username, kebabCase($packageName), $laravelVersion, $testingFramework === 'Pest' ? 'pest' : 'tests'],
-        filename: 'README.md',
-    );
+        replaceInFile(
+            search: [':username', ':packageName', ':laravelVersion', ':which-test'],
+            replace: [$username, kebabCase($packageName), $laravelVersion, $testingFramework === 'Pest' ? 'pest' : 'tests'],
+            filename: 'README.md',
+        );
+    }, message: 'Installing dependencies...');
 }
-
-info(message: 'Installation complete! You\'re all set to start building your package.');
 
 $deleteInstaller = confirm(label: 'Do you want to delete the installer?');
 
@@ -601,3 +635,5 @@ if ($deleteStubs) {
 
     warning(message: 'The stubs folder has been deleted');
 }
+
+info(message: 'Installation complete! You\'re all set to start building your package.');
