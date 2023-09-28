@@ -388,6 +388,7 @@ $packageName = ucfirst(camelCase(string: $packageName));
 
 // Add the Facade
 touch(filename: "src/Facades/$className.php");
+$packageNameKebab = kebabCase($packageName);
 $facadeCode = <<<EOT
 <?php
 
@@ -399,7 +400,7 @@ class $className extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return kebabCase($packageName);
+        return '$packageNameKebab';
     }
 }
 EOT;
