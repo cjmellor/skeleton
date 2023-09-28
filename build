@@ -335,12 +335,6 @@ if (in_array(needle: 'Update CHANGELOG', haystack: $enabledFeatures)) {
  * Add needed files for submitting issues to the repo.
  */
 rename(from: 'stubs/bug_report.yml.stub', to: '.github/ISSUE_TEMPLATE/bug_report.yml');
-rename(from: 'stubs/config.yml.stub', to: '.github/ISSUE_TEMPLATE/config.yml');
-replaceInFile(
-    search: [':vendorName', ':packageName'],
-    replace: [$vendorNameSlug, $packageName],
-    filename: '.github/ISSUE_TEMPLATE/config.yml',
-);
 
 /**
  * Add some meta data and main requirements.
