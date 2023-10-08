@@ -605,6 +605,7 @@ if ($confirmInstall) {
     spin(callback: function () use ($username, $packageName, $laravelVersion, $testingFramework) {
         run(command: 'composer update --quiet --no-interaction');
 
+        rename(from: 'stubs/PULL_REQUEST_TEMPLATE.md.stub', to: '.github/PULL_REQUEST_TEMPLATE.md');
         rename(from: 'stubs/README.md.stub', to: 'README.md');
 
         replaceInFile(
