@@ -8,7 +8,7 @@ The Package Skeleton CLI is a tool to generate a package skeleton to start build
 
 It is recommended to click the **Use this template** button and choose to create a new repository
 
-<img width="187" alt="image" src="https://github.com/cjmellor/skeleton/assets/1848476/7aed2752-c27a-4e9b-9e8b-8e86b4c800af">
+![Social Cover](https://github.com/cjmellor/skeleton/assets/1848476/ba82d059-9989-43c2-a1a2-d0970c576809)
 
 Otherwise, you can clone this repository into a new folder and launch the install:
 
