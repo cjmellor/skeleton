@@ -185,6 +185,7 @@ $className = ucwords($className);
 $phpVersion = select(
     label: 'What is the minimum PHP version your package supports?',
     options: [
+        '8.3',
         '8.2',
         '8.1',
     ],
@@ -197,6 +198,7 @@ $phpVersion = select(
 $laravelVersion = select(
     label: 'What is the minimum Laravel version your package supports?',
     options: [
+        '11',
         '10',
     ],
     default: '10',
