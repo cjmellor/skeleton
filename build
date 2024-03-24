@@ -358,7 +358,7 @@ $composerDataStructure = [
     ],
     "require" => [
         "php" => "^$phpVersion",
-        "illuminate/contracts" => "^$laravelVersion.0",
+        "illuminate/support" => "^$laravelVersion.0",
         "spatie/laravel-package-tools" => "^1.14",
     ],
     "require-dev" => [
