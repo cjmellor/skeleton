@@ -35,7 +35,7 @@ Replace `<username` and `<package-name>` where applicable.
 Run the following command to generate a package skeleton:
 
 ```bash
-php build
+php build.php
 ```
 
 You will be prompted with multiple questions in relation to your package. Once you have answered all the questions, the package skeleton will be generated.
