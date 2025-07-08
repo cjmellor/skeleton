@@ -57,25 +57,38 @@ function replaceInFile($search, $replace, $filename): void
 }
 
 /**
- * Merge data into composer.json safely.
+ * Write composer.json with proper structure order.
  */
 function addComposerData(array $data, string $filePath = 'composer.json'): bool
 {
-    if (! is_readable($filePath) || ! is_writable($filePath)) {
-        return false;
+    // Define the desired order of composer.json properties
+    $propertyOrder = [
+        'name', 'description', 'keywords', 'homepage', 'license', 'authors',
+        'require', 'require-dev',
+        'autoload', 'autoload-dev',
+        'scripts', 'config', 'extra',
+        'minimum-stability', 'prefer-stable',
+    ];
+
+    // Create ordered array
+    $orderedData = [];
+
+    foreach ($propertyOrder as $property) {
+        if (isset($data[$property])) {
+            $orderedData[$property] = $data[$property];
+        }
     }
 
-    $composerData = json_decode(file_get_contents($filePath), true);
-
-    if ($composerData === null && json_last_error() !== JSON_ERROR_NONE) {
-        return false;
+    // Add any remaining properties not in the order list
+    foreach ($data as $key => $value) {
+        if (! in_array($key, $propertyOrder)) {
+            $orderedData[$key] = $value;
+        }
     }
-
-    $composerData = array_merge($data, $composerData);
 
     $result = file_put_contents(
         $filePath,
-        json_encode($composerData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+        json_encode($orderedData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
     );
 
     return $result !== false;

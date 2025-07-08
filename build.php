@@ -311,15 +311,6 @@ function buildComposerData(array $details, array $features): array
             ],
             'post-update-cmd' => [
             ],
-            'post-root-package-install' => [
-                "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
-            ],
-            'post-create-project-cmd' => [
-                "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
-            ],
-            // 'dev' => [
-            //     'Composer\\Config::disableProcessTimeout',
-            // ],
         ],
         'config' => [
             'sort-packages' => true,
@@ -329,9 +320,9 @@ function buildComposerData(array $details, array $features): array
                 'providers' => ["$vendorName\\".camelCase($packageName, true)."\\{$className}ServiceProvider"],
                 'aliases' => ["$className" => "$vendorName\\".camelCase($packageName, true)."\\Facades\\$className"],
             ],
-            'minimum-stability' => 'stable',
-            'prefer-stable' => true,
         ],
+        'minimum-stability' => 'stable',
+        'prefer-stable' => true,
     ];
 
     // Pest-related dependencies and config
@@ -344,14 +335,11 @@ function buildComposerData(array $details, array $features): array
 
         $data['config']['allow-plugins']['pestphp/pest-plugin'] = true;
 
-        $data['scripts']['test'] = [
-        ];
+        $data['scripts']['test'] = 'vendor/bin/pest';
     } else {
         // PHPUnit as default
         $data['require-dev']['phpunit/phpunit'] = '^12.0';
-        $data['scripts']['test'] = [
-            '@php vendor/bin/phpunit',
-        ];
+        $data['scripts']['test'] = '@php vendor/bin/phpunit';
     }
 
     // Rector (optional)
