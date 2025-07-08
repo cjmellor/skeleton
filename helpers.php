@@ -33,7 +33,7 @@ function camelCase(string $string, bool $ucfirst = false): string
     $result = preg_replace_callback('/[-_](.)/', function ($matches) {
         return strtoupper($matches[1]);
     }, $string);
-    
+
     return $ucfirst ? ucfirst($result) : $result;
 }
 

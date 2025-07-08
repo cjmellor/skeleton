@@ -68,16 +68,16 @@ function promptForPackageDetails(): array
 {
     $packageAuthorName = suggest(
         label: "What is the package author's name?",
-        options: fn() => [run(command: 'git config user.name')],
+        options: fn () => [run(command: 'git config user.name')],
         required: true,
     );
 
     $email = suggest(
         label: "What is the package author's email?",
-        options: fn() => [run(command: 'git config user.email')],
+        options: fn () => [run(command: 'git config user.email')],
         required: true,
-        validate: fn($email) => match (true) {
-            !filter_var($email, FILTER_VALIDATE_EMAIL) => 'The email must be a valid email address',
+        validate: fn ($email) => match (true) {
+            ! filter_var($email, FILTER_VALIDATE_EMAIL) => 'The email must be a valid email address',
             default => null,
         },
     );
@@ -90,12 +90,12 @@ function promptForPackageDetails(): array
 
     $vendorName = ucwords(string: suggest(
         label: 'What namespace should the package use?',
-        options: fn() => [str_replace(search: '-', replace: '', subject: ucwords($username))],
+        options: fn () => [str_replace(search: '-', replace: '', subject: ucwords($username))],
         placeholder: 'Consider: '.ucwords($username),
         required: true,
-        validate: fn($vendor) => match (true) {
-            !preg_match(pattern: '/^[A-Za-z0-9\-]+$/i', subject: $vendor) => 'Vendor namespace must be alphanumeric',
-            !preg_match(pattern: '/^[A-Z]/i', subject: $vendor) => 'Vendor namespace must be capitalized',
+        validate: fn ($vendor) => match (true) {
+            ! preg_match(pattern: '/^[A-Za-z0-9\-]+$/i', subject: $vendor) => 'Vendor namespace must be alphanumeric',
+            ! preg_match(pattern: '/^[A-Z]/i', subject: $vendor) => 'Vendor namespace must be capitalized',
             default => null,
         },
     ));
@@ -106,8 +106,8 @@ function promptForPackageDetails(): array
         label: 'What name would you like to give your package?',
         options: [basename(getcwd())],
         required: true,
-        validate: fn($value) => match (true) {
-            !preg_match(pattern: '/^[A-Za-z0-9\-\s]+$/i', subject: $value) => 'Package name must be alphanumeric',
+        validate: fn ($value) => match (true) {
+            ! preg_match(pattern: '/^[A-Za-z0-9\-\s]+$/i', subject: $value) => 'Package name must be alphanumeric',
             default => null,
         },
     ));
@@ -119,13 +119,13 @@ function promptForPackageDetails(): array
 
     $className = ucwords(string: suggest(
         label: 'Choose a class name for your package',
-        options: fn() => [
+        options: fn () => [
             str_replace(search: ' ', replace: '', subject: ucwords(string: str_replace(['-', '_'], replace: ' ',
-                subject: $packageName)))
+                subject: $packageName))),
         ],
         required: true,
-        validate: fn($value) => match (true) {
-            !preg_match(pattern: '/^[A-Za-z0-9\-]+$/i', subject: $value) => 'Class name must be alphanumeric',
+        validate: fn ($value) => match (true) {
+            ! preg_match(pattern: '/^[A-Za-z0-9\-]+$/i', subject: $value) => 'Class name must be alphanumeric',
             default => null,
         },
     ));
@@ -217,11 +217,11 @@ function scaffoldDirectories(): void
             foreach ($value as $subDir) {
                 $dirPath = $key.'/'.$subDir;
 
-                if (!file_exists($dirPath)) {
+                if (! file_exists($dirPath)) {
                     mkdir($dirPath, recursive: true);
                 }
             }
-        } elseif (!file_exists($value)) {
+        } elseif (! file_exists($value)) {
             mkdir($value, recursive: true);
         }
     }
@@ -252,7 +252,7 @@ function updateLicense(string $author): void
  */
 function scaffoldGithubFiles(array $enabledFeatures): void
 {
-    if (!is_dir(filename: GITHUB_DIR)) {
+    if (! is_dir(filename: GITHUB_DIR)) {
         mkdir(directory: GITHUB_DIR);
         mkdir(directory: GITHUB_DIR.'/workflows');
         mkdir(directory: GITHUB_DIR.'/ISSUE_TEMPLATE');
@@ -296,13 +296,13 @@ function buildComposerData(array $details, array $features): array
         ],
         'autoload' => [
             'psr-4' => [
-                "$vendorName\\".camelCase($packageName, true)."\\" => 'src/',
-                "$vendorName\\".camelCase($packageName, true)."\\Database\\Factories\\" => 'database/factories/',
+                "$vendorName\\".camelCase($packageName, true).'\\' => 'src/',
+                "$vendorName\\".camelCase($packageName, true).'\\Database\\Factories\\' => 'database/factories/',
             ],
         ],
         'autoload-dev' => [
             'psr-4' => [
-                "$vendorName\\".camelCase($packageName, true)."\\Tests\\" => 'tests/',
+                "$vendorName\\".camelCase($packageName, true).'\\Tests\\' => 'tests/',
             ],
         ],
         'scripts' => [
@@ -371,7 +371,7 @@ function buildComposerData(array $details, array $features): array
     }
 
     // Remove refactor scripts if Rector is not enabled
-    if (!in_array('Rector', $enabledFeatures)) {
+    if (! in_array('Rector', $enabledFeatures)) {
         unset($data['scripts']['refactor'], $data['scripts']['refactor:dry']);
     }
 
