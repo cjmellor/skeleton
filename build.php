@@ -431,8 +431,8 @@ function scaffoldTests(array $details): void
     rename(STUBS_DIR.'/TestCase.php.stub', TESTS_DIR.'/TestCase.php');
 
     replaceInFile(
-        [':vendorName', ':packageName'],
-        [$details['vendorName'], $details['packageName']],
+        [':vendorName', ':packageName', ':packageNameServiceProvider'],
+        [$details['vendorName'], camelCase($details['packageName'], true), $details['className'].'ServiceProvider'],
         TESTS_DIR.'/TestCase.php'
     );
 
@@ -451,7 +451,7 @@ function scaffoldTests(array $details): void
 
         file_put_contents(
             TESTS_DIR.'/Pest.php',
-            "<?php\n\nuse {$details['vendorName']}\\{$details['packageName']}\\Tests\\TestCase;\n\nuses(TestCase::class)->in(__DIR__);\n"
+            "<?php\n\nuse {$details['vendorName']}\\".camelCase($details['packageName'], true)."\\Tests\\TestCase;\n\nuses(TestCase::class)->in(__DIR__);\n"
         );
 
         rename(STUBS_DIR.'/run-pest.yml.stub', GITHUB_DIR.'/workflows/run-pest.yml');
