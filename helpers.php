@@ -28,11 +28,13 @@ function slugify(string $text): string
 /**
  * Convert a string to camelCase.
  */
-function camelCase(string $string): string
+function camelCase(string $string, bool $ucfirst = false): string
 {
-    return preg_replace_callback('/[-_](.)/', function ($matches) {
+    $result = preg_replace_callback('/[-_](.)/', function ($matches) {
         return strtoupper($matches[1]);
     }, $string);
+    
+    return $ucfirst ? ucfirst($result) : $result;
 }
 
 /**
@@ -69,7 +71,7 @@ function addComposerData(array $data, string $filePath = 'composer.json'): bool
         return false;
     }
 
-    $composerData = array_merge($composerData, $data);
+    $composerData = array_merge($data, $composerData);
 
     $result = file_put_contents(
         $filePath,

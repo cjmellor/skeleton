@@ -296,13 +296,13 @@ function buildComposerData(array $details, array $features): array
         ],
         'autoload' => [
             'psr-4' => [
-                "$vendorName\\$packageName\\" => 'src/',
-                "$vendorName\\$packageName\\Database\\Factories\\" => 'database/factories/',
+                "$vendorName\\".camelCase($packageName, true)."\\" => 'src/',
+                "$vendorName\\".camelCase($packageName, true)."\\Database\\Factories\\" => 'database/factories/',
             ],
         ],
         'autoload-dev' => [
             'psr-4' => [
-                "$vendorName\\$packageName\\Tests\\" => 'tests/',
+                "$vendorName\\".camelCase($packageName, true)."\\Tests\\" => 'tests/',
             ],
         ],
         'scripts' => [
@@ -331,8 +331,8 @@ function buildComposerData(array $details, array $features): array
         ],
         'extra' => [
             'laravel' => [
-                'providers' => ["$vendorName\\$packageName\\{$className}ServiceProvider"],
-                'aliases' => ["$className" => "$vendorName\\$packageName\\Facades\\$className"],
+                'providers' => ["$vendorName\\".camelCase($packageName, true)."\\{$className}ServiceProvider"],
+                'aliases' => ["$className" => "$vendorName\\".camelCase($packageName, true)."\\Facades\\$className"],
             ],
             'minimum-stability' => 'stable',
             'prefer-stable' => true,
@@ -400,7 +400,7 @@ function buildComposerData(array $details, array $features): array
 function scaffoldFacadeAndProvider(array $details): void
 {
     $vendorName = $details['vendorName'];
-    $packageName = ucfirst(camelCase($details['packageName']));
+    $packageName = camelCase($details['packageName'], true);
     $className = $details['className'];
     $packageNameKebab = kebabCase($packageName);
 
