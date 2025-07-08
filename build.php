@@ -308,22 +308,17 @@ function buildComposerData(array $details, array $features): array
         'scripts' => [
             'post-autoload-dump' => [
                 'Illuminate\\Foundation\\ComposerScripts::postAutoloadDump',
-                '@php artisan package:discover --ansi',
             ],
             'post-update-cmd' => [
-                '@php artisan vendor:publish --tag=laravel-assets --ansi --force',
             ],
             'post-root-package-install' => [
                 "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             ],
             'post-create-project-cmd' => [
-                '@php artisan key:generate --ansi',
                 "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
-                '@php artisan migrate --graceful --ansi',
             ],
             // 'dev' => [
             //     'Composer\\Config::disableProcessTimeout',
-            //     'npx concurrently -c "#93c5fd,#c4b5fd,#fb7185,#fdba74" "php artisan serve" "php artisan queue:listen --tries=1" "php artisan pail --timeout=0" "pnpm run dev" --names=server,queue,logs,vite',
             // ],
         ],
         'config' => [
@@ -350,14 +345,11 @@ function buildComposerData(array $details, array $features): array
         $data['config']['allow-plugins']['pestphp/pest-plugin'] = true;
 
         $data['scripts']['test'] = [
-            '@php artisan config:clear --ansi',
-            '@php artisan test',
         ];
     } else {
         // PHPUnit as default
         $data['require-dev']['phpunit/phpunit'] = '^12.0';
         $data['scripts']['test'] = [
-            '@php artisan config:clear --ansi',
             '@php vendor/bin/phpunit',
         ];
     }
