@@ -473,6 +473,8 @@ function scaffoldFeatureFiles(array $features, array $details): void
 
     if (in_array('Pint', $enabledFeatures)) {
         rename(STUBS_DIR.'/run-linter.yml.stub', GITHUB_DIR.'/workflows/run-linter.yml');
+
+        rename(STUBS_DIR.'/pint.json.stub', 'pint.json');
     }
 
     if (in_array('PHPStan', $enabledFeatures)) {
